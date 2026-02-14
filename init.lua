@@ -1,3 +1,4 @@
+require 'brad'
 --[[
 
 =====================================================================
@@ -257,7 +258,10 @@ rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
   { 'NMAC427/guess-indent.nvim', opts = {} },
-
+  { 'mfussenegger/nvim-dap' },
+  { 'rcarriga/nvim-dap-ui' },
+  { 'Mathijs-Bakker/godotdev.nvim' },
+  { 'mbbill/undotree' },
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
   -- If you prefer to call `setup` explicitly, use:
   --    {
@@ -416,7 +420,7 @@ require('lazy').setup({
         group = vim.api.nvim_create_augroup('telescope-lsp-attach', { clear = true }),
         callback = function(event)
           local buf = event.buf
-
+          local opts = { buffer = buff }
           -- Find references for the word under your cursor.
           vim.keymap.set('n', 'grr', builtin.lsp_references, { buffer = buf, desc = '[G]oto [R]eferences' })
 
@@ -441,6 +445,9 @@ require('lazy').setup({
           -- Useful when you're not sure what type a variable is and you want to see
           -- the definition of its *type*, not where it was *defined*.
           vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = buf, desc = '[G]oto [T]ype Definition' })
+          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+          vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+          vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
         end,
       })
 
@@ -593,7 +600,7 @@ require('lazy').setup({
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -614,7 +621,8 @@ require('lazy').setup({
       -- You can press `g?` for help in this menu.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'lua_ls', -- Lua Language server
+        'lua-language-server',
+        --'lua_ls', -- Lua Language server
         'stylua', -- Used to format Lua code
         -- You can add other tools here that you want Mason to install
       })
@@ -627,6 +635,23 @@ require('lazy').setup({
         vim.lsp.enable(name)
       end
 
+      vim.lsp.config('godotdev', {
+        editor_host = '127.0.0.1', -- Godot editor host
+        editor_port = 6005, -- Godot LSP port
+        debug_port = 6006, -- Godot debugger port
+        csharp = true, -- Enable C# Installation Support
+        autostart_editor_server = true, -- Enable auto start Nvim server
+      })
+
+      -- Godot LSP (not managed by Mason)
+      -- vim.lsp.config('gdscript', {
+      --   cmd = { 'nc', '127.0.0.1', '6005' }, -- Godot 4 default port
+      --   filetypes = { 'gd', 'gdscript', 'gdscript3' },
+      --   root_dir = vim.fn.getcwd(),
+      --   capabilities = capabilities,
+      -- })
+      --
+      vim.lsp.enable 'gdscript'
       -- Special Lua Config, as recommended by neovim help docs
       vim.lsp.config('lua_ls', {
         on_init = function(client)
