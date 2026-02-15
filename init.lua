@@ -1,7 +1,7 @@
 require 'brad'
 --[[
 
-=====================================================================
+=====================================================================system. I just want to leave them so I cancan remember later for other libs.
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
@@ -259,61 +259,69 @@ require('lazy').setup({
 
   { 'NMAC427/guess-indent.nvim', opts = {} },
 
+  -- {
+  --   'hrsh7th/nvim-cmp',
+  --   dependencies = {
+  --     'hrsh7th/cmp-buffer',
+  --     'hrsh7th/cmp-path',
+  --   },
+  -- },
+  -- {
+  --   'epwalsh/obsidian.nvim',
+  --   version = '*', -- recommended, use latest release instead of latest commit
+  --   lazy = false,
+  --   cond = function()
+  --     local cwd = vim.fn.getcwd()
+  --     return cwd:find('Mind Garden', 1, true) ~= nil
+  --   end,
+  --   ft = 'markdown',
+  --   -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+  --   -- event = {
+  --   --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+  --   --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+  --   --   -- refer to `:h file-pattern` for more examples
+  --   --   "BufReadPre path/to/my-vault/*.md",
+  --   --   "BufNewFile path/to/my-vault/*.md",
+  --   -- },
+  --   dependencies = {
+  --     -- Required.
+  --     'nvim-lua/plenary.nvim',
+  --
+  --     -- see below for full list of optional dependencies 👇
+  --   },
+  --   config = function()
+  --     require('obsidian').setup {
+  --       workspaces = {
+  --         {
+  --           name = 'Mind Garden',
+  --           path = vim.fn.expand '~/Documents/Mind Garden/',
+  --         },
+  --         -- {
+  --         --   name = 'work',
+  --         --   path = '~/vaults/work',
+  --         -- },
+  --       },
+  --       daily_notes = {
+  --         folder = '3-Other/Daily Notes',
+  --       },
+  --       completion = {
+  --         nvim_cmp = true,
+  --         min_chars = 2,
+  --       },
+  --       -- see below for full list of options 👇
+  --     }
+  --   end,
+  -- },
+
   {
-    'hrsh7th/nvim-cmp',
+    'mfussenegger/nvim-dap',
     dependencies = {
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
+      'leoluz/nvim-dap-go',
+      'rcarriga/nvim-dap-ui',
+      'theHamsta/nvim-dap-virtual-text',
+      'williamboman/mason.nvim',
     },
   },
-  {
-    'epwalsh/obsidian.nvim',
-    version = '*', -- recommended, use latest release instead of latest commit
-    lazy = false,
-    cond = function()
-      local cwd = vim.fn.getcwd()
-      return cwd:find('Mind Garden', 1, true) ~= nil
-    end,
-    ft = 'markdown',
-    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-    -- event = {
-    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
-    --   -- refer to `:h file-pattern` for more examples
-    --   "BufReadPre path/to/my-vault/*.md",
-    --   "BufNewFile path/to/my-vault/*.md",
-    -- },
-    dependencies = {
-      -- Required.
-      'nvim-lua/plenary.nvim',
-
-      -- see below for full list of optional dependencies 👇
-    },
-    config = function()
-      require('obsidian').setup {
-        workspaces = {
-          {
-            name = 'Mind Garden',
-            path = vim.fn.expand '~/Documents/Mind Garden/',
-          },
-          -- {
-          --   name = 'work',
-          --   path = '~/vaults/work',
-          -- },
-        },
-        daily_notes = {
-          folder = '3-Other/Daily Notes',
-        },
-        completion = {
-          nvim_cmp = true,
-          min_chars = 2,
-        },
-        -- see below for full list of options 👇
-      }
-    end,
-  },
-
-  { 'mfussenegger/nvim-dap' },
   {
     'rcarriga/nvim-dap-ui',
     dependencies = {
@@ -762,7 +770,7 @@ require('lazy').setup({
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 1000,
             lsp_format = 'fallback',
           }
         end
@@ -848,7 +856,7 @@ require('lazy').setup({
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
       },
 
       sources = {
@@ -1003,3 +1011,4 @@ function ImproveTokyo(color)
 end
 
 ImproveTokyo()
+require 'brad.launchgodot'
