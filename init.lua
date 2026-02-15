@@ -313,6 +313,13 @@ require('lazy').setup({
   --   end,
   -- },
 
+  -- {
+  --   'rcarriga/nvim-dap-ui',
+  --   dependencies = {
+  --     'mfussenegger/nvim-dap',
+  --     'nvim-neotest/nvim-nio',
+  --   },
+  -- },
   {
     'mfussenegger/nvim-dap',
     dependencies = {
@@ -320,19 +327,57 @@ require('lazy').setup({
       'rcarriga/nvim-dap-ui',
       'theHamsta/nvim-dap-virtual-text',
       'williamboman/mason.nvim',
-    },
-  },
-  {
-    'rcarriga/nvim-dap-ui',
-    dependencies = {
-      'mfussenegger/nvim-dap',
       'nvim-neotest/nvim-nio',
     },
-    -- config = function()
-    --   require('lazydev').setup {
-    --     library = { 'nvim-dap-ui' },
-    --   }
-    -- end,
+    config = function()
+      local dap = require 'dap'
+      local ui = require 'dapui'
+
+      require('dapui').setup()
+      dap.adapters.cppdbg = {
+        id = 'cppdbg',
+        type = 'executable',
+        command = vim.fn.stdpath 'data' .. '/mason/packages/cpptools/extension/debugAdapters/bin/OpenDebugAD7',
+      }
+      dap.configurations.cpp = {
+        {
+          name = 'Launch with gdb',
+          type = 'cppdbg',
+          request = 'launch',
+          program = vim.fn.getcwd() .. '/build/debug',
+          cwd = '${workspaceFolder}',
+          stopAtEntry = false,
+          MIMode = 'gdb',
+          miDebuggerPath = '/usr/bin/gdb', -- change if needed
+          setupCommands = {
+            {
+              text = '-enable-pretty-printing',
+              description = 'Enable pretty printing',
+              ignoreFailures = false,
+            },
+          },
+        },
+      }
+      -- require('nvim-dap-virtual-text').setup()
+      vim.keymap.set('n', '<F5>', dap.continue)
+      vim.keymap.set('n', '<F6>', dap.reverse_continue)
+      vim.keymap.set('n', '<F11>', dap.step_into)
+      vim.keymap.set('n', '<F12>', dap.step_over)
+      vim.keymap.set('n', '<S-F11>', dap.step_out)
+      vim.keymap.set('n', '<M-F11>', dap.step_back)
+      vim.keymap.set('n', '<F8>', dap.terminate)
+      vim.keymap.set('n', '<LEADER>bs', dap.set_breakpoint, { desc = '[B]reakpoint [S]et' })
+      vim.keymap.set('n', '<LEADER>bt', dap.toggle_breakpoint, { desc = '[B]reakpoint [T]oggle' })
+      vim.keymap.set('n', '<LEADER>bl', dap.toggle_breakpoint, { desc = '[B]reakpoint [L]ist' })
+      vim.keymap.set('n', '<LEADER>bc', dap.toggle_breakpoint, { desc = '[B]reakpoint [C]lear' })
+      -- vim.keymap.set('n', '<LEADER>br', dap.toggle_breakpoint, { desc = '[B]reakpoint [T]oggle' })
+      vim.keymap.set('n', '<LEADER>bt', dap.toggle_breakpoint, { desc = '[B]reakpoint [T]oggle' })
+
+      dap.listeners.before.attach.dapui_config = function() ui.open() end
+      dap.listeners.before.launch.dapui_config = function() ui.open() end
+      dap.listeners.before.event_terminated.dapui_config = function() ui.close() end
+      dap.listeners.before.event_exited.dapui_config = function() ui.close() end
+    end,
   },
   { 'Mathijs-Bakker/godotdev.nvim' },
   { 'mbbill/undotree' },
@@ -1012,3 +1057,4 @@ end
 
 ImproveTokyo()
 require 'brad.launchgodot'
+require 'brad.remap'

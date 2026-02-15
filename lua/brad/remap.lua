@@ -1,5 +1,3 @@
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
 vim.keymap.set('n', '<leader><F5>', vim.cmd.UndotreeToggle, { desc = '[F5] Toggle undo tree' })
 
 -- Actual remaps
@@ -16,3 +14,4 @@ vim.keymap.set('n', '<leader>rm', function()
   vim.fn.system { 'rm', file }
   vim.cmd 'bdelete'
 end, { desc = '[R]e[M]ove current file' })
+-- vim.keymap.set('n', '<F1>', dap.step_into)

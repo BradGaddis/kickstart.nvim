@@ -1,4 +1,3 @@
-require 'brad.remap'
+require 'brad.config'
 require 'brad.colorimprovements'
 require 'brad.build'
-require 'brad.config'
