@@ -331,14 +331,28 @@ require('lazy').setup({
     },
     config = function()
       local dap = require 'dap'
+      -- require('dap.ext.vscode').load_launchjs = function() end
       local ui = require 'dapui'
-
       require('dapui').setup()
+
+      -- Disable VS Code launch.json provider
+      dap.listeners.after['event_initialized']['dapextvscode'] = nil
+      dap.listeners.before['event_initialized']['dapextvscode'] = nil
+
+      local function get_godot_root() return vim.fs.root(0, { 'project.godot' }) end
+
       dap.adapters.cppdbg = {
         id = 'cppdbg',
         type = 'executable',
         command = vim.fn.stdpath 'data' .. '/mason/packages/cpptools/extension/debugAdapters/bin/OpenDebugAD7',
       }
+
+      dap.adapters.godot = {
+        type = 'server',
+        host = '127.0.0.1',
+        port = 6006,
+      }
+
       dap.configurations.cpp = {
         {
           name = 'Launch with gdb',
@@ -358,14 +372,34 @@ require('lazy').setup({
           },
         },
       }
+
+      local gdconfig = {
+        type = 'godot',
+        request = 'launch',
+        name = 'Launch Godot',
+        project = function() return get_godot_root() end,
+        launch_scene = true,
+      }
+
+      dap.configurations.gdscript = { gdconfig }
+
       -- require('nvim-dap-virtual-text').setup()
-      vim.keymap.set('n', '<F5>', dap.continue)
+      vim.keymap.set('n', '<F1>', function()
+        local root = get_godot_root()
+        if root then
+          require('dap').run(gdconfig)
+        else
+          require('dap').continue()
+        end
+      end)
+
+      -- vim.keymap.set('n', '<F1>', dap.continue)
+      vim.keymap.set('n', '<F2>', dap.step_into)
+      vim.keymap.set('n', '<F3>', dap.step_over)
+      vim.keymap.set('n', '<F4>', dap.step_out)
+      vim.keymap.set('n', '<F5>', dap.step_back)
       vim.keymap.set('n', '<F6>', dap.reverse_continue)
-      vim.keymap.set('n', '<F11>', dap.step_into)
-      vim.keymap.set('n', '<F12>', dap.step_over)
-      vim.keymap.set('n', '<S-F11>', dap.step_out)
-      vim.keymap.set('n', '<M-F11>', dap.step_back)
-      vim.keymap.set('n', '<F8>', dap.terminate)
+      vim.keymap.set('n', '<F7>', dap.terminate)
       vim.keymap.set('n', '<LEADER>bs', dap.set_breakpoint, { desc = '[B]reakpoint [S]et' })
       vim.keymap.set('n', '<LEADER>bt', dap.toggle_breakpoint, { desc = '[B]reakpoint [T]oggle' })
       vim.keymap.set('n', '<LEADER>bl', dap.toggle_breakpoint, { desc = '[B]reakpoint [L]ist' })
@@ -757,7 +791,7 @@ require('lazy').setup({
       vim.lsp.config('godotdev', {
         editor_host = '127.0.0.1', -- Godot editor host
         editor_port = 6005, -- Godot LSP port
-        debug_port = 6006, -- Godot debugger port
+        debug_port = 6007, -- Godot debugger port
         csharp = true, -- Enable C# Installation Support
         autostart_editor_server = true, -- Enable auto start Nvim server
       })
