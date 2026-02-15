@@ -88,9 +88,8 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = ' '
-vim.g.maplocalleader = ' '
-
+--
+-- I put these in my personal config remap for easier use
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
 
@@ -257,9 +256,76 @@ rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
+
   { 'NMAC427/guess-indent.nvim', opts = {} },
+
+  {
+    'hrsh7th/nvim-cmp',
+    dependencies = {
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+    },
+  },
+  {
+    'epwalsh/obsidian.nvim',
+    version = '*', -- recommended, use latest release instead of latest commit
+    lazy = false,
+    cond = function()
+      local cwd = vim.fn.getcwd()
+      return cwd:find('Mind Garden', 1, true) ~= nil
+    end,
+    ft = 'markdown',
+    -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
+    -- event = {
+    --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+    --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
+    --   -- refer to `:h file-pattern` for more examples
+    --   "BufReadPre path/to/my-vault/*.md",
+    --   "BufNewFile path/to/my-vault/*.md",
+    -- },
+    dependencies = {
+      -- Required.
+      'nvim-lua/plenary.nvim',
+
+      -- see below for full list of optional dependencies 👇
+    },
+    config = function()
+      require('obsidian').setup {
+        workspaces = {
+          {
+            name = 'Mind Garden',
+            path = vim.fn.expand '~/Documents/Mind Garden/',
+          },
+          -- {
+          --   name = 'work',
+          --   path = '~/vaults/work',
+          -- },
+        },
+        daily_notes = {
+          folder = '3-Other/Daily Notes',
+        },
+        completion = {
+          nvim_cmp = true,
+          min_chars = 2,
+        },
+        -- see below for full list of options 👇
+      }
+    end,
+  },
+
   { 'mfussenegger/nvim-dap' },
-  { 'rcarriga/nvim-dap-ui' },
+  {
+    'rcarriga/nvim-dap-ui',
+    dependencies = {
+      'mfussenegger/nvim-dap',
+      'nvim-neotest/nvim-nio',
+    },
+    -- config = function()
+    --   require('lazydev').setup {
+    --     library = { 'nvim-dap-ui' },
+    --   }
+    -- end,
+  },
   { 'Mathijs-Bakker/godotdev.nvim' },
   { 'mbbill/undotree' },
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
@@ -420,7 +486,7 @@ require('lazy').setup({
         group = vim.api.nvim_create_augroup('telescope-lsp-attach', { clear = true }),
         callback = function(event)
           local buf = event.buf
-          local opts = { buffer = buff }
+          local opts = { buffer = buf }
           -- Find references for the word under your cursor.
           vim.keymap.set('n', 'grr', builtin.lsp_references, { buffer = buf, desc = '[G]oto [R]eferences' })
 
@@ -643,14 +709,6 @@ require('lazy').setup({
         autostart_editor_server = true, -- Enable auto start Nvim server
       })
 
-      -- Godot LSP (not managed by Mason)
-      -- vim.lsp.config('gdscript', {
-      --   cmd = { 'nc', '127.0.0.1', '6005' }, -- Godot 4 default port
-      --   filetypes = { 'gd', 'gdscript', 'gdscript3' },
-      --   root_dir = vim.fn.getcwd(),
-      --   capabilities = capabilities,
-      -- })
-      --
       vim.lsp.enable 'gdscript'
       -- Special Lua Config, as recommended by neovim help docs
       vim.lsp.config('lua_ls', {
@@ -831,7 +889,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'tokyonight-moon'
     end,
   },
 
@@ -936,3 +994,12 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+function ImproveTokyo(color)
+  color = color or 'tokyonight-moon'
+  vim.cmd.colorscheme(color)
+
+  vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+end
+
+ImproveTokyo()
