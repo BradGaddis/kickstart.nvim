@@ -1,7 +1,7 @@
 require 'brad'
 --[[
 
-=====================================================================system. I just want to leave them so I cancan remember later for other libs.
+=e===================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
@@ -257,6 +257,63 @@ rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
 
+  -- {
+  --   'stevearc/oil.nvim',
+  --   ---@module 'oil'
+  --   ---@type oil.SetupOpts
+  --   opts = {},
+  --   -- Optional dependencies
+  --   dependencies = { { 'nvim-mini/mini.icons', opts = {} } },
+  --   -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+  --   -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+  --   lazy = false,
+  -- },
+
+  ---@type LazySpec
+  -- {
+  --   'mikavilpas/yazi.nvim',
+  --   version = '*', -- use the latest stable version
+  --   event = 'VeryLazy',
+  --   dependencies = {
+  --     { 'nvim-lua/plenary.nvim', lazy = true },
+  --   },
+  --   keys = {
+  --     -- 👇 in this section, choose your own keymappings!
+  --     {
+  --       '<leader>-',
+  --       mode = { 'n', 'v' },
+  --       '<cmd>Yazi<cr>',
+  --       desc = 'Open yazi at the current file',
+  --     },
+  --     {
+  --       -- Open in the current working directory
+  --       '<leader>cw',
+  --       '<cmd>Yazi cwd<cr>',
+  --       desc = "Open the file manager in nvim's working directory",
+  --     },
+  --     {
+  --       '<c-up>',
+  --       '<cmd>Yazi toggle<cr>',
+  --       desc = 'Resume the last yazi session',
+  --     },
+  --   },
+  --   ---@type YaziConfig | {}
+  --   opts = {
+  --     -- if you want to open yazi instead of netrw, see below for more info
+  --     open_for_directories = false,
+  --     -- keymaps = {
+  --     --   show_help = '<f1>',
+  --     -- },
+  --   },
+  --   -- 👇 if you use `open_for_directories=true`, this is recommended
+  --   init = function()
+  --     -- mark netrw as loaded so it's not loaded at all.
+  --     --
+  --     -- More details: https://github.com/mikavilpas/yazi.nvim/issues/802
+  --     vim.g.loaded_netrwPlugin = 1
+  --   end,
+  -- },
+
   { 'NMAC427/guess-indent.nvim', opts = {} },
 
   -- {
@@ -313,106 +370,6 @@ require('lazy').setup({
   --   end,
   -- },
 
-  -- {
-  --   'rcarriga/nvim-dap-ui',
-  --   dependencies = {
-  --     'mfussenegger/nvim-dap',
-  --     'nvim-neotest/nvim-nio',
-  --   },
-  -- },
-  {
-    'mfussenegger/nvim-dap',
-    dependencies = {
-      'leoluz/nvim-dap-go',
-      'rcarriga/nvim-dap-ui',
-      'theHamsta/nvim-dap-virtual-text',
-      'williamboman/mason.nvim',
-      'nvim-neotest/nvim-nio',
-    },
-    config = function()
-      local dap = require 'dap'
-      -- require('dap.ext.vscode').load_launchjs = function() end
-      local ui = require 'dapui'
-      require('dapui').setup()
-
-      -- Disable VS Code launch.json provider
-      dap.listeners.after['event_initialized']['dapextvscode'] = nil
-      dap.listeners.before['event_initialized']['dapextvscode'] = nil
-
-      local function get_godot_root() return vim.fs.root(0, { 'project.godot' }) end
-
-      dap.adapters.cppdbg = {
-        id = 'cppdbg',
-        type = 'executable',
-        command = vim.fn.stdpath 'data' .. '/mason/packages/cpptools/extension/debugAdapters/bin/OpenDebugAD7',
-      }
-
-      dap.adapters.godot = {
-        type = 'server',
-        host = '127.0.0.1',
-        port = 6006,
-      }
-
-      dap.configurations.cpp = {
-        {
-          name = 'Launch with gdb',
-          type = 'cppdbg',
-          request = 'launch',
-          program = vim.fn.getcwd() .. '/build/debug',
-          cwd = '${workspaceFolder}',
-          stopAtEntry = false,
-          MIMode = 'gdb',
-          miDebuggerPath = '/usr/bin/gdb', -- change if needed
-          setupCommands = {
-            {
-              text = '-enable-pretty-printing',
-              description = 'Enable pretty printing',
-              ignoreFailures = false,
-            },
-          },
-        },
-      }
-
-      local gdconfig = {
-        type = 'godot',
-        request = 'launch',
-        name = 'Launch Godot',
-        project = function() return get_godot_root() end,
-        launch_scene = true,
-      }
-
-      dap.configurations.gdscript = { gdconfig }
-
-      -- require('nvim-dap-virtual-text').setup()
-      vim.keymap.set('n', '<F1>', function()
-        local root = get_godot_root()
-        if root then
-          require('dap').run(gdconfig)
-        else
-          require('dap').continue()
-        end
-      end)
-
-      -- vim.keymap.set('n', '<F1>', dap.continue)
-      vim.keymap.set('n', '<F2>', dap.step_into)
-      vim.keymap.set('n', '<F3>', dap.step_over)
-      vim.keymap.set('n', '<F4>', dap.step_out)
-      vim.keymap.set('n', '<F5>', dap.step_back)
-      vim.keymap.set('n', '<F6>', dap.reverse_continue)
-      vim.keymap.set('n', '<F7>', dap.terminate)
-      vim.keymap.set('n', '<LEADER>bs', dap.set_breakpoint, { desc = '[B]reakpoint [S]et' })
-      vim.keymap.set('n', '<LEADER>bt', dap.toggle_breakpoint, { desc = '[B]reakpoint [T]oggle' })
-      vim.keymap.set('n', '<LEADER>bl', dap.toggle_breakpoint, { desc = '[B]reakpoint [L]ist' })
-      vim.keymap.set('n', '<LEADER>bc', dap.toggle_breakpoint, { desc = '[B]reakpoint [C]lear' })
-      -- vim.keymap.set('n', '<LEADER>br', dap.toggle_breakpoint, { desc = '[B]reakpoint [T]oggle' })
-      vim.keymap.set('n', '<LEADER>bt', dap.toggle_breakpoint, { desc = '[B]reakpoint [T]oggle' })
-
-      dap.listeners.before.attach.dapui_config = function() ui.open() end
-      dap.listeners.before.launch.dapui_config = function() ui.open() end
-      dap.listeners.before.event_terminated.dapui_config = function() ui.close() end
-      dap.listeners.before.event_exited.dapui_config = function() ui.close() end
-    end,
-  },
   { 'Mathijs-Bakker/godotdev.nvim' },
   { 'mbbill/undotree' },
   -- Alternatively, use `config = function() ... end` for full control over the configuration.
@@ -566,8 +523,18 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-
-      -- This runs on LSP attach per buffer (see main LSP attach function in 'neovim/nvim-lspconfig' config for more info,
+      vim.keymap.set('n', '<leader>oc', function() builtin.buffers.outgoing_calls() end, { desc = 'List [O]utgoing [C]alls' })
+      vim.keymap.set(
+        'n',
+        '<leader>rs',
+        function()
+          builtin.lsp_references {
+            reuse_win = true,
+            show_line = true,
+          }
+        end,
+        { desc = '[R]eference LSP [S]earch' }
+      )
       -- it is better explained there). This allows easily switching between pickers if you prefer using something else!
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('telescope-lsp-attach', { clear = true }),
@@ -753,7 +720,31 @@ require('lazy').setup({
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
-        clangd = {},
+        ['typescript-language-server'] = {
+          cmd = { 'typescript-language-server', '--stdio' },
+          filetypes = {
+            'javascript',
+            'javascriptreact',
+            'typescript',
+            'typescriptreact',
+          },
+        },
+
+        clangd = {
+          cmd = {
+            'clangd',
+            '--compile-commands-dir=.',
+            '--header-insertion=never',
+            '--clang-tidy',
+            '--background-index',
+            '--suggest-missing-includes',
+          },
+          init_options = {
+            usePlaceholders = true,
+            completeUnimported = true,
+            clangdFileStatus = true,
+          },
+        },
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -775,6 +766,8 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'lua-language-server',
+        'bash-language-server',
+        'typescript-language-server', -- ← add this
         --'lua_ls', -- Lua Language server
         'stylua', -- Used to format Lua code
         -- You can add other tools here that you want Mason to install
@@ -820,9 +813,14 @@ require('lazy').setup({
         end,
         settings = {
           Lua = {},
+          json = {
+            schemas = require('schemastore').json.schemas(),
+            validate = { enable = true },
+          },
         },
       })
       vim.lsp.enable 'lua_ls'
+      vim.lsp.enable 'tsp-server'
     end,
   },
 
@@ -832,35 +830,48 @@ require('lazy').setup({
     cmd = { 'ConformInfo' },
     keys = {
       {
-        '<leader>f',
+        '<leader>fb',
         function() require('conform').format { async = true, lsp_format = 'fallback' } end,
         mode = '',
         desc = '[F]ormat buffer',
       },
     },
     opts = {
-      notify_on_error = false,
+      notify_on_error = true,
       format_on_save = function(bufnr)
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = false, cpp = false, typescript = false }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
           return {
-            timeout_ms = 1000,
+            timeout_ms = 500,
             lsp_format = 'fallback',
           }
         end
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        typescript = { 'prettier' },
+        gdscript = {},
+        c = { 'clang-format' },
+        cpp = { 'clang-format' },
+
         -- Conform can also run multiple formatters sequentially
+        ['*'] = { 'codespell' },
+        ['_'] = { 'trim_whitespace' },
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+      },
+      formatters = {
+        ['clang-format'] = {
+          -- prepend extra arguments
+          prepend_args = { '--style=file' },
+        },
       },
     },
   },
@@ -922,6 +933,7 @@ require('lazy').setup({
         -- See :h blink-cmp-config-keymap for defining your own keymap
         preset = 'default',
 
+        ['<CR>'] = { 'accept', 'fallback' }, -- Actions table, not string
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
       },
@@ -1000,6 +1012,7 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
+      require('mini.pairs').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -1022,7 +1035,23 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      local filetypes = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'gdscript',
+        'python',
+        'javascript',
+        'typescript',
+      }
       require('nvim-treesitter').install(filetypes)
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
@@ -1051,7 +1080,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1090,5 +1119,39 @@ function ImproveTokyo(color)
 end
 
 ImproveTokyo()
-require 'brad.launchgodot'
+-- require 'brad.launchgodot'
 require 'brad.remap'
+
+require('gitsigns').setup {
+  on_attach = function(bufnr)
+    local gs = require 'gitsigns'
+
+    local function map(mode, lhs, rhs, desc)
+      vim.keymap.set(mode, lhs, rhs, {
+        buffer = bufnr,
+        silent = true,
+        desc = desc,
+      })
+    end
+
+    -- Navigation
+    map('n', ']c', function() gs.nav_hunk 'next' end, 'Next hunk')
+    map('n', '[c', function() gs.nav_hunk 'prev' end, 'Previous hunk')
+
+    -- Actions
+    map('n', '<leader>hs', gs.stage_hunk, 'Stage hunk')
+    map('n', '<leader>hr', gs.reset_hunk, 'Reset hunk')
+    map('n', '<leader>hS', gs.stage_buffer, 'Stage buffer')
+    -- map('n', '<leader>hu', gs.undo_stage_hunk, 'Undo stage hunk')
+    map('n', '<leader>hR', gs.reset_buffer, 'Reset buffer')
+    map('n', '<leader>hp', gs.preview_hunk, 'Preview hunk')
+    map('n', '<leader>hb', function() gs.blame_line { full = true } end, 'Blame line')
+    map('n', '<leader>hB', gs.toggle_current_line_blame, 'Toggle line blame')
+    map('n', '<leader>hd', gs.diffthis, 'Diff this')
+    map('n', '<leader>hD', function() gs.diffthis '~' end, 'Diff this ~')
+    map('n', '<leader>ht', gs.preview_hunk_inline, 'Toggle deleted')
+
+    -- Visual / operator-pending text object
+    map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select hunk')
+  end,
+}
