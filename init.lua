@@ -495,11 +495,11 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          mappings = {
+            i = { ['<M-enter>'] = 'to_fuzzy_refine' },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = { require('telescope.themes').get_dropdown() },
@@ -781,13 +781,13 @@ require('lazy').setup({
         vim.lsp.enable(name)
       end
 
-      vim.lsp.config('godotdev', {
-        editor_host = '127.0.0.1', -- Godot editor host
-        editor_port = 6005, -- Godot LSP port
-        debug_port = 6007, -- Godot debugger port
-        csharp = true, -- Enable C# Installation Support
-        autostart_editor_server = true, -- Enable auto start Nvim server
-      })
+      -- vim.lsp.config('godotdev', {
+      --   editor_host = '127.0.0.1', -- Godot editor host
+      --   editor_port = 6005, -- Godot LSP port
+      --   debug_port = 6007, -- Godot debugger port
+      --   csharp = true, -- Enable C# Installation Support
+      --   autostart_editor_server = true, -- Enable auto start Nvim server
+      -- })
 
       vim.lsp.enable 'gdscript'
       -- Special Lua Config, as recommended by neovim help docs
@@ -852,16 +852,16 @@ require('lazy').setup({
           }
         end
       end,
+      -- gdscript = { 'gdscript-formatter' },
       formatters_by_ft = {
         lua = { 'stylua' },
         typescript = { 'prettier' },
-        gdscript = {},
         c = { 'clang-format' },
         cpp = { 'clang-format' },
 
         -- Conform can also run multiple formatters sequentially
-        ['*'] = { 'codespell' },
-        ['_'] = { 'trim_whitespace' },
+        -- ['*'] = { 'codespell' },
+        -- ['_'] = { 'trim_whitespace' },
         -- python = { "isort", "black" },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
@@ -1048,6 +1048,8 @@ require('lazy').setup({
         'vim',
         'vimdoc',
         'gdscript',
+        'gdshader',
+        'godot_resource',
         'python',
         'javascript',
         'typescript',
@@ -1154,4 +1156,51 @@ require('gitsigns').setup {
     -- Visual / operator-pending text object
     map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select hunk')
   end,
+}
+
+-- vim.keymap.set('n', '<leader>st', function() Snacks.picker.todo_comments() end, { desc = 'TODO comments' })
+
+vim.keymap.set('n', '<leader>st', function() Snacks.picker.todo_comments { keywords = { 'TODO', 'FIX', 'FIXME' } } end, { desc = 'TODO/FIX/FIXME comments' })
+
+-- vim.keymap.set('n', '<leader>sT', function() Snacks.picker.todo_comments { buf = 0 } end, { desc = 'TODOs in current buffer' })
+
+require('godotdev').setup {
+  bin = 'godot',
+
+  dap = {
+    host = '127.0.0.1',
+    port = 6006,
+  },
+
+  gui = {
+    console_config = {
+      anchor = 'SW',
+      border = 'double',
+      col = 1,
+      height = 10,
+      relative = 'editor',
+      row = 99999,
+      style = 'minimal',
+      width = 99999,
+    },
+  },
+
+  expose_commands = true,
+}
+
+require('oil').setup {
+  view_options = {
+    show_hidden = true,
+    is_always_hidden = function(name, bufnr)
+      -- for godot projects ignore *.uid files
+      if is_godot_project then
+        -- ignore *.uid files introduced in godot 4.4
+        if vim.endswith(name, '.uid') then return true end
+        -- ignore server.pipe file
+        if name == 'server.pipe' then return true end
+      else
+        return false
+      end
+    end,
+  },
 }
