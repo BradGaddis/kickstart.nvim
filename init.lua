@@ -729,7 +729,9 @@ require('lazy').setup({
             'typescriptreact',
           },
         },
-
+        ['bash-language-server'] = {
+          filetypes = { 'sh', 'bash', 'zsh' },
+        },
         clangd = {
           cmd = {
             'clangd',
@@ -842,7 +844,9 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = false, cpp = false, typescript = false }
+        local disable_filetypes = {
+          -- c = false, cpp = false, typescript = false
+        }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
@@ -975,20 +979,22 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    -- 'folke/tokyonight.nvim',
+    --
+    'xero/miasma.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
-      }
+      -- -@diagnostic disable-next-line: missing-fields
+      -- require('tokyonight').setup {
+      --   styles = {
+      --     comments = { italic = true }, -- Disable italics in comments
+      --   },
+      -- }
 
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-moon'
+      -- vim.cmd.colorscheme 'tokyonight-moon'
     end,
   },
 
@@ -1112,15 +1118,15 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
-function ImproveTokyo(color)
-  color = color or 'tokyonight-moon'
-  vim.cmd.colorscheme(color)
-
-  vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
-  vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
-end
-
-ImproveTokyo()
+-- function ImproveTokyo(color)
+--   color = color or 'tokyonight-moon'
+--   vim.cmd.colorscheme(color)
+--
+--   vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
+--   vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
+-- end
+--
+-- ImproveTokyo()
 -- require 'brad.launchgodot'
 require 'brad.remap'
 
@@ -1164,6 +1170,7 @@ vim.keymap.set('n', '<leader>st', function() Snacks.picker.todo_comments { keywo
 
 -- vim.keymap.set('n', '<leader>sT', function() Snacks.picker.todo_comments { buf = 0 } end, { desc = 'TODOs in current buffer' })
 
+-- TODO: Do I need this still?
 require('godotdev').setup {
   bin = 'godot',
 

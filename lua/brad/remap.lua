@@ -14,6 +14,7 @@ vim.keymap.set('n', '<leader>rm', function()
   vim.fn.system { 'rm', file }
   vim.cmd 'bdelete'
 end, { desc = '[R]e[M]ove current file' })
+
 vim.keymap.set('n', '<leader><F5>', vim.cmd.UndotreeToggle, { desc = '[F5] Toggle undo tree' })
 local function goto_next_prioritized()
   local diagnostics = vim.diagnostic.get(0, { severity = { vim.diagnostic.severity.ERROR } })
@@ -43,3 +44,6 @@ vim.keymap.set(
   ':!pkill -9 -f "winedbg|windebug\\\\.exe|start\\\\.exe|services\\\\.exe|winedevice\\\\.exe|explorer\\\\.exe|plugplay\\\\.exe|svchost\\\\.exe|rpcss\\\\.exe|conhost\\\\.exe"<CR>',
   { silent = false }
 )
+
+vim.keymap.set('n', '<leader>as', '<cmd>ASToggle<CR>', { desc = 'Toggle autosave' })
+vim.keymap.set('n', '<leader>of', '<cmd>ObsidianFollowLink<CR>', { desc = 'Obsidian Follow Link' })
