@@ -34,7 +34,11 @@ return {
     { '<leader>fc', function() Snacks.picker.files { cwd = vim.fn.stdpath 'config' } end, desc = 'Find Config File' },
     { '<leader>ff', function() Snacks.picker.files() end, desc = 'Find Files' },
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'Find Git Files' },
-    { '<leader>fp', function() Snacks.picker.projects() end, desc = 'Projects' },
+    {
+      '<leader>fp',
+      function() Snacks.picker.projects { dev = { '~/Projects/', '~/Projects/Godot_Projects/' }, matcher = { frecency = true } } end,
+      desc = 'Projects',
+    },
     { '<leader>fr', function() Snacks.picker.recent() end, desc = 'Recent' },
     -- git
     { '<leader>gb', function() Snacks.picker.git_branches() end, desc = 'Git Branches' },
@@ -70,7 +74,59 @@ return {
     { '<leader>sk', function() Snacks.picker.keymaps() end, desc = 'Keymaps' },
     { '<leader>sl', function() Snacks.picker.loclist() end, desc = 'Location List' },
     { '<leader>sm', function() Snacks.picker.marks() end, desc = 'Marks' },
-    { '<leader>sM', function() Snacks.picker.man() end, desc = 'Man Pages' },
+    {
+      '<leader>sM',
+      function()
+        Snacks.picker.man {
+          finder = 'system_man',
+          format = 'man',
+          preview = 'man',
+          confirm = function(picker, item, action)
+            ---@cast action snacks.picker.jump.Action
+            picker:close()
+            if item then
+              vim.schedule(function()
+                local cmd = 'Man ' .. item.ref ---@type string
+                if action.cmd == 'vsplit' then
+                  cmd = 'vert ' .. cmd
+                elseif action.cmd == 'tab' then
+                  cmd = 'tab ' .. cmd
+                end
+                vim.cmd(cmd)
+              end)
+            end
+          end,
+        }
+      end,
+      desc = 'Man Pages',
+    },
+    -- {
+    --   '<leader>sM',
+    --   function()
+    --     vim.ui.input({ prompt = 'Search man pages: ' }, function(term)
+    --       if not term or term == '' then return end
+    --
+    --       local cmd = {
+    --         'bash',
+    --         '-lc',
+    --         [[grep -RIn --binary-files=without-match ]] .. vim.fn.shellescape(term) .. [[ /usr/share/man 2>/dev/null]],
+    --       }
+    --
+    --       local lines = vim.fn.systemlist(cmd)
+    --
+    --       Snacks.picker {
+    --         items = vim.tbl_map(function(line) return { text = line } end, lines),
+    --         format = function(item) return { { item.text, 'SnacksPickerComment' } } end,
+    --         confirm = function(picker, item)
+    --           picker:close()
+    --           local file = item.text:match '^([^:]+):'
+    --           if file then vim.cmd('edit ' .. vim.fn.fnameescape(file)) end
+    --         end,
+    --       }
+    --     end)
+    --   end,
+    --   desc = 'Search Man Pages',
+    -- },
     { '<leader>sp', function() Snacks.picker.lazy() end, desc = 'Search for Plugin Spec' },
     { '<leader>sq', function() Snacks.picker.qflist() end, desc = 'Quickfix List' },
     { '<leader>sR', function() Snacks.picker.resume() end, desc = 'Resume' },

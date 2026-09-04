@@ -46,4 +46,5 @@ vim.keymap.set(
 )
 
 vim.keymap.set('n', '<leader>as', '<cmd>ASToggle<CR>', { desc = 'Toggle autosave' })
-vim.keymap.set('n', '<leader>of', '<cmd>ObsidianFollowLink<CR>', { desc = 'Obsidian Follow Link' })
+-- vim.keymap.set('n', '<leader>of', '<cmd>ObsidianFollowLink<CR>', { desc = 'Obsidian Follow Link' })
+vim.keymap.set('n', '<leader>o', '<cmd>Obsidian<CR>', { desc = 'Obsidian Commands' })

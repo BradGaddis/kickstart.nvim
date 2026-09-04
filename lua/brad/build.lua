@@ -1,9 +1,11 @@
 require 'brad.helpers'
 
+-- TODO: use a dictionary / map
+
 vim.api.nvim_create_autocmd('BufEnter', {
   pattern = '*',
   callback = function()
-    local file = vim.fn.findfile('build.sh', '.;') or vim.fn.findfile('project.godot', '.;')
+    local file = vim.fn.findfile('Makefile', '.;') or vim.fn.findfile('build.sh', '.;') or vim.fn.findfile('project.godot', '.;')
     if file == nil then
       vim.notify("didn't find anything to build", vim.log.levels.INFO)
       return
@@ -12,6 +14,10 @@ vim.api.nvim_create_autocmd('BufEnter', {
     vim.keymap.set('n', '<M-m>', function()
       vim.cmd ':wa'
       vim.cmd('lcd ' .. root)
+      if file == 'Makefile' then
+        vim.notify('Running Make file with default args', vim.log.levels.INFO)
+        vim.cmd '!make'
+      end
       if file == 'build.sh' then
         vim.notify('building c project', vim.log.levels.INFO)
         vim.cmd '!./build.sh'

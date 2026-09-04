@@ -11,4 +11,4 @@ vim.opt.shiftwidth = 4
 vim.opt.conceallevel = 2
 vim.opt.wrap = true
 vim.opt.linebreak = true
-vim.opt.showbreak = '+-->    '
+vim.opt.showbreak = '+->  '

@@ -61,14 +61,47 @@ return {
 
     dap.set_log_level 'DEBUG'
 
-    dap.adapters.gdb = {
-      type = 'executable',
-      command = 'gdb-multiarch',
-      args = { '-i', 'dap', '-ex', 'target remote localhost:1234' }, -- Remove -ex continue
-      options = {
-        initialize_timeout_sec = 30,
-        disconnect_timeout_sec = 30,
-        terminate_timeout_sec = 30,
+    dap.configurations.odin = {
+      {
+        name = 'Launch Odin',
+        type = 'lldb',
+        request = 'launch',
+        program = function()
+          local out = vim.fn.getcwd() .. '/bin/debug'
+          local result = vim.fn.system 'make debug_dap'
+          if vim.v.shell_error ~= 0 then
+            print('Odin build failed:\n' .. result)
+            return dap.ABORT
+          end
+          return out
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+        runInTerminal = false,
+        console = 'integratedTerminal',
+      },
+      {
+        name = 'Launch Odin (with args)',
+        type = 'lldb',
+        request = 'launch',
+        program = function()
+          local out = vim.fn.getcwd() .. '/bin/debug'
+          local result = vim.fn.system 'make debug_dap'
+          if vim.v.shell_error ~= 0 then
+            print('Odin build failed:\n' .. result)
+            return dap.ABORT
+          end
+          return out
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = function()
+          local args_str = vim.fn.input 'Arguments: '
+          return vim.split(args_str, ' ')
+        end,
+        runInTerminal = false,
+        console = 'integratedTerminal',
       },
     }
 
