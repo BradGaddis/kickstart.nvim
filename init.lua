@@ -185,7 +185,7 @@ vim.diagnostic.config {
   virtual_lines = false, -- Teest shows up underneath the line, with virtual lines
 
   -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
-  jump = { float = true },
+  jump = { on_jump = function() vim.diagnostic.open_float() end },
 }
 
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
@@ -827,7 +827,6 @@ require('lazy').setup({
         },
       })
       vim.lsp.enable 'lua_ls'
-      vim.lsp.enable 'tsp-server'
       vim.lsp.enable 'ols'
       vim.lsp.enable 'bash-language-server'
     end,
@@ -1140,7 +1139,14 @@ require('lazy').setup({
       lazy = '💤 ',
     },
   },
+  rocks = { enabled = false },
 })
+
+-- Disable unused providers to keep :checkhealth clean
+vim.g.loaded_node_provider = 0
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider = 0
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
