@@ -6,12 +6,32 @@ return {
     'theHamsta/nvim-dap-virtual-text',
     'williamboman/mason.nvim',
     'nvim-neotest/nvim-nio',
+    'jay-babu/mason-nvim-dap.nvim',
   },
   config = function()
     local dap = require 'dap'
     -- require('dap.ext.vscode').load_launchjs = function() end
     local ui = require 'dapui'
     require('dapui').setup()
+
+    -- Install LLDB (codelldb) debug adapter for Odin. Register it as `lldb`
+    -- so the existing `type = 'lldb'` launch configs keep working.
+    require('mason-nvim-dap').setup {
+      ensure_installed = { 'codelldb' },
+      automatic_installation = true,
+    }
+
+    local lldb_path = vim.fn.stdpath 'data' .. '/mason/packages/codelldb/extension/adapter/codelldb'
+    dap.adapters.codelldb = {
+      type = 'executable',
+      command = lldb_path,
+      name = 'codelldb',
+    }
+    dap.adapters.lldb = {
+      type = 'executable',
+      command = lldb_path,
+      name = 'lldb',
+    }
 
     local function get_godot_root() return vim.fs.root(0, { 'project.godot' }) end
 
@@ -68,7 +88,7 @@ return {
         request = 'launch',
         program = function()
           local out = vim.fn.getcwd() .. '/bin/debug'
-          local result = vim.fn.system 'make debug_dap'
+          local result = vim.fn.system 'make debug_build'
           if vim.v.shell_error ~= 0 then
             print('Odin build failed:\n' .. result)
             return dap.ABORT
@@ -78,28 +98,6 @@ return {
         cwd = '${workspaceFolder}',
         stopOnEntry = false,
         args = {},
-        runInTerminal = false,
-        console = 'integratedTerminal',
-      },
-      {
-        name = 'Launch Odin (with args)',
-        type = 'lldb',
-        request = 'launch',
-        program = function()
-          local out = vim.fn.getcwd() .. '/bin/debug'
-          local result = vim.fn.system 'make debug_dap'
-          if vim.v.shell_error ~= 0 then
-            print('Odin build failed:\n' .. result)
-            return dap.ABORT
-          end
-          return out
-        end,
-        cwd = '${workspaceFolder}',
-        stopOnEntry = false,
-        args = function()
-          local args_str = vim.fn.input 'Arguments: '
-          return vim.split(args_str, ' ')
-        end,
         runInTerminal = false,
         console = 'integratedTerminal',
       },
@@ -125,26 +123,31 @@ return {
       }
     end)
     vim.keymap.set('n', '<F1>', function()
-      local root = get_godot_root()
-      if root then
+      if get_godot_root() then
         require('dap').run(gdconfig)
       else
-        require('dap').continue()
+        print 'Not a Godot project'
       end
     end)
+    vim.keymap.set('n', '<F2>', dap.repl.open, { desc = 'Open DAP [R]epl' })
     vim.keymap.set('n', '<F3>', dap.step_over)
     vim.keymap.set('n', '<F4>', dap.step_out)
     vim.keymap.set('n', '<F5>', dap.continue)
     vim.keymap.set('n', '<F6>', dap.step_into)
-    vim.keymap.set('n', '<F7>', dap.step_back)
     vim.keymap.set('n', '<F8>', dap.terminate)
-    vim.keymap.set('n', '<F9>', dap.reverse_continue)
-    vim.keymap.set('n', '<LEADER>bs', dap.set_breakpoint, { desc = '[B]reakpoint [S]et' })
-    vim.keymap.set('n', '<LEADER>bt', dap.toggle_breakpoint, { desc = '[B]reakpoint [T]oggle' })
-    vim.keymap.set('n', '<LEADER>bl', dap.toggle_breakpoint, { desc = '[B]reakpoint [L]ist' })
-    vim.keymap.set('n', '<LEADER>bc', dap.toggle_breakpoint, { desc = '[B]reakpoint [C]lear' })
-    -- vim.keymap.set('n', '<LEADER>br', dap.toggle_breakpoint, { desc = '[B]reakpoint [T]oggle' })
-    vim.keymap.set('n', '<LEADER>bb', dap.toggle_breakpoint, { desc = 'Quick breakpoint toggle. Can free the other keymap if desired.' })
+    vim.keymap.set('n', '<F9>', dap.restart)
+    vim.keymap.set('n', '<LEADER>db', dap.toggle_breakpoint, { desc = '[D]ebug [B]reakpoint' })
+    vim.keymap.set('n', '<LEADER>dc', function()
+      dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
+    end, { desc = '[D]ebug [C]onditional breakpoint' })
+    vim.keymap.set('n', '<LEADER>dl', function()
+      dap.toggle_breakpoint(nil, vim.fn.input 'Log point message: ')
+    end, { desc = '[D]ebug [L]og point' })
+    vim.keymap.set('n', '<LEADER>dr', dap.run_to_cursor, { desc = '[D]ebug [R]un to cursor' })
+    vim.keymap.set('n', '<LEADER>du', function() ui.toggle() end, { desc = '[D]ebug [U]I toggle' })
+    vim.keymap.set({ 'n', 'v' }, '<LEADER>de', function()
+      require('dap.ui.widgets').hover()
+    end, { desc = '[D]ebug [E]valuate under cursor' })
 
     dap.listeners.before.attach.dapui_config = function() ui.open() end
     dap.listeners.before.launch.dapui_config = function() ui.open() end
