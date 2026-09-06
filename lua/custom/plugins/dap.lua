@@ -7,12 +7,43 @@ return {
     'williamboman/mason.nvim',
     'nvim-neotest/nvim-nio',
     'jay-babu/mason-nvim-dap.nvim',
+    'Jorenar/nvim-dap-disasm',
+    'neoguri7/dap-lowlevel.nvim',
   },
   config = function()
     local dap = require 'dap'
     -- require('dap.ext.vscode').load_launchjs = function() end
     local ui = require 'dapui'
-    require('dapui').setup()
+    require('dapui').setup {
+      layouts = {
+        {
+          elements = {
+            { id = 'scopes', size = 0.25 },
+            { id = 'breakpoints', size = 0.1 },
+            { id = 'stacks', size = 0.2 },
+            { id = 'watches', size = 0.15 },
+          },
+          size = 0.33,
+          position = 'left',
+        },
+        {
+          elements = {
+            { id = 'repl', size = 0.35 },
+            { id = 'console', size = 0.15 },
+            { id = 'disassembly', size = 0.5 },
+          },
+          size = 0.25,
+          position = 'bottom',
+        },
+      },
+    }
+
+    -- Register the disassembly view as a dap-ui element (shows current
+    -- instruction with winbar buttons for instruction-level stepping).
+    require('dap-disasm').setup { dapui_register = true }
+
+    -- Registers/memory views (separate floating windows).
+    require('dap_lowlevel').setup()
 
     -- Install LLDB (codelldb) debug adapter for Odin. Register it as `lldb`
     -- so the existing `type = 'lldb'` launch configs keep working.
@@ -148,6 +179,16 @@ return {
     vim.keymap.set({ 'n', 'v' }, '<LEADER>de', function()
       require('dap.ui.widgets').hover()
     end, { desc = '[D]ebug [E]valuate under cursor' })
+    vim.keymap.set('n', '<LEADER>da', function()
+      for _, win in ipairs(vim.api.nvim_list_wins()) do
+        if vim.bo[vim.api.nvim_win_get_buf(win)].filetype == 'dap-disassembly' then
+          return vim.api.nvim_win_close(win, true)
+        end
+      end
+      vim.cmd 'DapDisasm'
+    end, { desc = '[D]ebug [A]ssembly toggle' })
+    vim.keymap.set('n', '<LEADER>dR', function() vim.cmd.DapLowlevelRegs() end, { desc = '[D]ebug [R]egisters' })
+    vim.keymap.set('n', '<LEADER>dm', function() vim.cmd.DapLowlevelMemory() end, { desc = '[D]ebug [M]emory' })
 
     dap.listeners.before.attach.dapui_config = function() ui.open() end
     dap.listeners.before.launch.dapui_config = function() ui.open() end
