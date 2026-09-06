@@ -190,6 +190,9 @@ return {
     end, { desc = '[D]ebug [A]ssembly toggle' })
     vim.keymap.set('n', '<LEADER>dR', function() vim.cmd.DapLowlevelRegs() end, { desc = '[D]ebug [R]egisters' })
     vim.keymap.set('n', '<LEADER>dm', function() vim.cmd.DapLowlevelMemory() end, { desc = '[D]ebug [M]emory' })
+    vim.keymap.set('n', '<LEADER>ds', function() ui.float_element 'scopes' end, { desc = '[D]ebug float [S]copes' })
+    vim.keymap.set('n', '<LEADER>dt', function() ui.float_element 'breakpoints' end, { desc = '[D]ebug float [B]reakpoints' })
+    vim.keymap.set('n', '<LEADER>dw', function() ui.float_element 'watches' end, { desc = '[D]ebug float [W]atches' })
 
     dap.listeners.before.attach.dapui_config = function() ui.open() end
     dap.listeners.before.launch.dapui_config = function() ui.open() end

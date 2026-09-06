@@ -609,6 +609,9 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+    keys = {
+      { '<leader>cm', '<cmd>Mason<CR>', desc = '[C]ode [M]ason packages' },
+    },
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
@@ -846,6 +849,14 @@ require('lazy').setup({
         mode = '',
         desc = '[F]ormat buffer',
       },
+      {
+        '<leader>uF',
+        function()
+          vim.g.disable_autoformat = not vim.g.disable_autoformat
+          vim.notify('Autoformat ' .. (vim.g.disable_autoformat and 'off' or 'on'))
+        end,
+        desc = 'Toggle auto [F]ormat on save',
+      },
     },
     opts = {
       notify_on_error = true,
@@ -1011,6 +1022,10 @@ require('lazy').setup({
     'folke/todo-comments.nvim',
     event = 'VimEnter',
     dependencies = { 'nvim-lua/plenary.nvim' },
+    keys = {
+      { '<leader>ft', function() require('todo-comments.jump').next() end, desc = 'Next TODO comment' },
+      { '<leader>fT', function() require('todo-comments.jump').prev() end, desc = 'Prev TODO comment' },
+    },
     opts = {
       signs = true,
       highlight = {
@@ -1193,6 +1208,9 @@ require('gitsigns').setup {
     map('n', '<leader>hd', gs.diffthis, 'Diff this')
     map('n', '<leader>hD', function() gs.diffthis '~' end, 'Diff this ~')
     map('n', '<leader>ht', gs.preview_hunk_inline, 'Toggle deleted')
+    map('n', '<leader>hn', gs.toggle_numhl, 'Toggle line numbers diff hl')
+    map('n', '<leader>hL', gs.toggle_linehl, 'Toggle whole line diff hl')
+    map('n', '<leader>hw', gs.toggle_word_diff, 'Toggle word-level diff hl')
 
     -- Visual / operator-pending text object
     map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select hunk')
