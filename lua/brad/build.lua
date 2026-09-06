@@ -27,7 +27,7 @@ vim.api.nvim_create_autocmd('BufEnter', {
         vim.cmd '!scons'
       end
       --vim.cmd 'redraw!' -- clean up the “Press ENTER” prompt
-    end, { buffer = true, silent = false })
+    end, { buffer = true, silent = false, desc = 'Build project (make/build.sh/scons)' })
   end,
 })
 

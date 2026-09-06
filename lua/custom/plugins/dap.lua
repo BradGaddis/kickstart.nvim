@@ -14,6 +14,7 @@ return {
     local dap = require 'dap'
     -- require('dap.ext.vscode').load_launchjs = function() end
     local ui = require 'dapui'
+
     require('dapui').setup {
       layouts = {
         {
@@ -152,21 +153,21 @@ return {
           },
         },
       }
-    end)
+    end, { desc = 'Debug Wine winedbg launch' })
     vim.keymap.set('n', '<F1>', function()
       if get_godot_root() then
         require('dap').run(gdconfig)
       else
         print 'Not a Godot project'
       end
-    end)
+    end, { desc = 'Debug Launch Godot' })
     vim.keymap.set('n', '<F2>', dap.repl.open, { desc = 'Open DAP [R]epl' })
-    vim.keymap.set('n', '<F3>', dap.step_over)
-    vim.keymap.set('n', '<F4>', dap.step_out)
-    vim.keymap.set('n', '<F5>', dap.continue)
-    vim.keymap.set('n', '<F6>', dap.step_into)
-    vim.keymap.set('n', '<F8>', dap.terminate)
-    vim.keymap.set('n', '<F9>', dap.restart)
+    vim.keymap.set('n', '<F3>', dap.step_over, { desc = 'Debug step over' })
+    vim.keymap.set('n', '<F4>', dap.step_out, { desc = 'Debug step out' })
+    vim.keymap.set('n', '<F5>', dap.continue, { desc = 'Debug continue' })
+    vim.keymap.set('n', '<F6>', dap.step_into, { desc = 'Debug step into' })
+    vim.keymap.set('n', '<F8>', dap.terminate, { desc = 'Debug terminate' })
+    vim.keymap.set('n', '<F9>', dap.restart, { desc = 'Debug restart' })
     vim.keymap.set('n', '<LEADER>db', dap.toggle_breakpoint, { desc = '[D]ebug [B]reakpoint' })
     vim.keymap.set('n', '<LEADER>dc', function()
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')

@@ -1,13 +1,13 @@
-vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
-vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
-vim.keymap.set('n', '<C-d>', '<C-d>zz')
-vim.keymap.set('n', 'G', 'Gzz')
-vim.keymap.set('n', '<C-u>', '<C-u>zz')
-vim.keymap.set('n', 'n', 'nzzzv')
-vim.keymap.set('n', 'N', 'Nzzzv')
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up' })
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down' })
+vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Scroll down and center' })
+vim.keymap.set('n', 'G', 'Gzz', { desc = 'Go to end and center' })
+vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Scroll up and center' })
+vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Next search match centered' })
+vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Prev search match centered' })
 vim.keymap.set('n', '<M-j>', 'i<CR><Esc>', { desc = 'split line' })
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'drop overwrite into void register' })
-vim.keymap.set('n', '<leader>e', ':Oil<CR>')
+vim.keymap.set('n', '<leader>e', ':Oil<CR>', { desc = 'Open file explorer (Oil)' })
 vim.keymap.set('n', '<C-:>', ':w', { desc = 'Save file' })
 vim.keymap.set('n', '<leader>rm', function()
   local file = vim.fn.expand '%:p'
@@ -35,14 +35,14 @@ local function goto_prev_prioritized()
 end
 
 -- Keymaps
-vim.keymap.set('n', '<M-n>', goto_next_prioritized)
-vim.keymap.set('n', '<M-p>', goto_prev_prioritized)
+vim.keymap.set('n', '<M-n>', goto_next_prioritized, { desc = 'Next diagnostic (error/warn)' })
+vim.keymap.set('n', '<M-p>', goto_prev_prioritized, { desc = 'Prev diagnostic (error/warn)' })
 
 vim.keymap.set(
   'n',
   '<leader>kw',
   ':!pkill -9 -f "winedbg|windebug\\\\.exe|start\\\\.exe|services\\\\.exe|winedevice\\\\.exe|explorer\\\\.exe|plugplay\\\\.exe|svchost\\\\.exe|rpcss\\\\.exe|conhost\\\\.exe"<CR>',
-  { silent = false }
+  { silent = false, desc = 'Kill winedbg/wine processes' }
 )
 
 vim.keymap.set('n', '<leader>as', '<cmd>ASToggle<CR>', { desc = 'Toggle autosave' })
