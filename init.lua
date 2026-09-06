@@ -734,9 +734,10 @@ require('lazy').setup({
             'typescriptreact',
           },
         },
-        ['bash-language-server'] = {
+        bashls = {
           filetypes = { 'sh', 'bash', 'zsh' },
         },
+        autotools_ls = {},
         clangd = {
           cmd = {
             'clangd',
@@ -770,11 +771,15 @@ require('lazy').setup({
       --    :Mason
       --
       -- You can press `g?` for help in this menu.
-      local ensure_installed = vim.tbl_keys(servers or {})
+      local ensure_installed = vim.tbl_filter(function(name)
+        -- LSP-only names; the mason packages are 'bash-language-server' and 'autotools-language-server'
+        return name ~= 'autotools_ls' and name ~= 'bashls'
+      end, vim.tbl_keys(servers or {}))
       vim.list_extend(ensure_installed, {
         'lua-language-server',
         'bash-language-server',
         'typescript-language-server', -- ← add this
+        'autotools-language-server', -- Make/automake/autoconf LSP
         --'lua_ls', -- Lua Language server
         'stylua', -- Used to format Lua code
         -- You can add other tools here that you want Mason to install
@@ -828,7 +833,6 @@ require('lazy').setup({
       })
       vim.lsp.enable 'lua_ls'
       vim.lsp.enable 'ols'
-      vim.lsp.enable 'bash-language-server'
     end,
   },
 
@@ -1250,10 +1254,7 @@ require('oil').setup {
 --
 require('auto-save').setup {
   condition = function(buf)
-    local ft = vim.bo[buf].filetype
-    local buftype = vim.bo[buf].buftype
-
-    return vim.bo[buf].modifiable and buftype == '' and ft ~= 'oil' and ft ~= 'lazy'
+    return vim.bo[buf].filetype == 'markdown'
   end,
 }
 
