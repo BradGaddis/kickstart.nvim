@@ -172,27 +172,20 @@ return {
     vim.keymap.set('n', '<F10>', dap.pause, { desc = 'Debug pause' })
     vim.keymap.set('n', '<F11>', dap.run_to_cursor, { desc = 'Debug run to cursor' })
     vim.keymap.set('n', '<LEADER>db', dap.toggle_breakpoint, { desc = '[D]ebug [B]reakpoint' })
-    vim.keymap.set('n', '<LEADER>dc', function()
-      dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
-    end, { desc = '[D]ebug [C]onditional breakpoint' })
-    vim.keymap.set('n', '<LEADER>dl', function()
-      dap.toggle_breakpoint(nil, vim.fn.input 'Log point message: ')
-    end, { desc = '[D]ebug [L]og point' })
+    vim.keymap.set('n', '<LEADER>dc', function() dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ') end, { desc = '[D]ebug [C]onditional breakpoint' })
+    vim.keymap.set('n', '<LEADER>dl', function() dap.toggle_breakpoint(nil, vim.fn.input 'Log point message: ') end, { desc = '[D]ebug [L]og point' })
     vim.keymap.set('n', '<LEADER>dr', dap.run_to_cursor, { desc = '[D]ebug [R]un to cursor' })
     vim.keymap.set('n', '<LEADER>dL', dap.run_last, { desc = '[D]ebug run [L]ast config' })
     vim.keymap.set('n', '<LEADER>dp', dap.pause, { desc = '[D]ebug [P]ause' })
     vim.keymap.set('n', '<LEADER>dd', dap.disconnect, { desc = '[D]ebug [D]isconnect' })
     vim.keymap.set('n', '<LEADER>dk', dap.up, { desc = '[D]ebug stack u[p]' })
     vim.keymap.set('n', '<LEADER>dj', dap.down, { desc = '[D]ebug stack [d]own' })
+    vim.keymap.set('n', '<LEADER>df', dap.focus_frame, { desc = '[D]ebug [F]ocus frame (jump to stopped line)' })
     vim.keymap.set('n', '<LEADER>du', function() ui.toggle() end, { desc = '[D]ebug [U]I toggle' })
-    vim.keymap.set({ 'n', 'v' }, '<LEADER>de', function()
-      require('dap.ui.widgets').hover()
-    end, { desc = '[D]ebug [E]valuate under cursor' })
+    vim.keymap.set({ 'n', 'v' }, '<LEADER>de', function() require('dap.ui.widgets').hover() end, { desc = '[D]ebug [E]valuate under cursor' })
     vim.keymap.set('n', '<LEADER>da', function()
       for _, win in ipairs(vim.api.nvim_list_wins()) do
-        if vim.bo[vim.api.nvim_win_get_buf(win)].filetype == 'dap-disassembly' then
-          return vim.api.nvim_win_close(win, true)
-        end
+        if vim.bo[vim.api.nvim_win_get_buf(win)].filetype == 'dap-disassembly' then return vim.api.nvim_win_close(win, true) end
       end
       vim.cmd 'DapDisasm'
     end, { desc = '[D]ebug [A]ssembly toggle' })
@@ -211,9 +204,7 @@ return {
     dap.listeners.after.event_exited.dapui_config = function() ui.close() end
     dap.listeners.after.event_stopped.dapui_config = function(_, _)
       local ok, e = pcall(ui.open)
-      if not ok then
-        vim.notify('dapui: ' .. e, vim.log.levels.WARN)
-      end
+      if not ok then vim.notify('dapui: ' .. e, vim.log.levels.WARN) end
     end
     dap.listeners.after.disconnect.dapui_config = function() ui.close() end
     dap.listeners.after.terminate.dapui_config = function() ui.close() end
