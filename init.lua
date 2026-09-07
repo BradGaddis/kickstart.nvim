@@ -609,9 +609,6 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
-    keys = {
-      { '<leader>cm', '<cmd>Mason<CR>', desc = '[C]ode [M]ason packages' },
-    },
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
@@ -788,6 +785,8 @@ require('lazy').setup({
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+
+      vim.keymap.set('n', '<leader>cm', '<cmd>Mason<CR>', { desc = '[C]ode [M]ason packages' })
 
       for name, server in pairs(servers) do
         server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
@@ -1086,7 +1085,6 @@ require('lazy').setup({
       local filetypes = {
         'bash',
         'c',
-        'diff',
         'html',
         'lua',
         'luadoc',
