@@ -169,6 +169,8 @@ return {
     vim.keymap.set('n', '<F7>', dap.step_back, { desc = 'Debug step back' })
     vim.keymap.set('n', '<F8>', dap.terminate, { desc = 'Debug terminate' })
     vim.keymap.set('n', '<F9>', dap.restart, { desc = 'Debug restart' })
+    vim.keymap.set('n', '<F10>', dap.pause, { desc = 'Debug pause' })
+    vim.keymap.set('n', '<F11>', dap.run_to_cursor, { desc = 'Debug run to cursor' })
     vim.keymap.set('n', '<LEADER>db', dap.toggle_breakpoint, { desc = '[D]ebug [B]reakpoint' })
     vim.keymap.set('n', '<LEADER>dc', function()
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
@@ -207,7 +209,12 @@ return {
     dap.listeners.after.terminateThreads.dapui_config = function() ui.close() end
     dap.listeners.after.event_terminated.dapui_config = function() ui.close() end
     dap.listeners.after.event_exited.dapui_config = function() ui.close() end
-    dap.listeners.after.event_stopped.dapui_config = function(_, _) ui.open() end
+    dap.listeners.after.event_stopped.dapui_config = function(_, _)
+      local ok, e = pcall(ui.open)
+      if not ok then
+        vim.notify('dapui: ' .. e, vim.log.levels.WARN)
+      end
+    end
     dap.listeners.after.disconnect.dapui_config = function() ui.close() end
     dap.listeners.after.terminate.dapui_config = function() ui.close() end
   end,
