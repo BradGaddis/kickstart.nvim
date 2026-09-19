@@ -48,3 +48,20 @@ vim.keymap.set(
 vim.keymap.set('n', '<leader>as', '<cmd>ASToggle<CR>', { desc = 'Toggle autosave' })
 -- vim.keymap.set('n', '<leader>of', '<cmd>ObsidianFollowLink<CR>', { desc = 'Obsidian Follow Link' })
 vim.keymap.set('n', '<leader>o', '<cmd>Obsidian<CR>', { desc = 'Obsidian Commands' })
+
+-- Tab navigation
+vim.keymap.set('n', '<leader>Tn', '<cmd>tabn<CR>', { desc = '[T]ab [N]ext' })
+vim.keymap.set('n', '<leader>Tp', '<cmd>tabp<CR>', { desc = '[T]ab [P]rev' })
+vim.keymap.set('n', '<leader>To', '<cmd>tabnew<CR>', { desc = '[T]ab [O]pen' })
+vim.keymap.set('n', '<leader>Tc', '<cmd>tabclose<CR>', { desc = '[T]ab [C]lose' })
+vim.keymap.set('n', '<leader>Tm', '<cmd>tabm<CR>', { desc = '[T]ab [M]ove' })
+
+vim.keymap.set('n', '<leader>1', '1gt', { desc = 'Go to tab 1' })
+vim.keymap.set('n', '<leader>2', '2gt', { desc = 'Go to tab 2' })
+vim.keymap.set('n', '<leader>3', '3gt', { desc = 'Go to tab 3' })
+vim.keymap.set('n', '<leader>4', '4gt', { desc = 'Go to tab 4' })
+vim.keymap.set('n', '<leader>5', '5gt', { desc = 'Go to tab 5' })
+vim.keymap.set('n', '<leader>6', '6gt', { desc = 'Go to tab 6' })
+vim.keymap.set('n', '<leader>7', '7gt', { desc = 'Go to tab 7' })
+vim.keymap.set('n', '<leader>8', '8gt', { desc = 'Go to tab 8' })
+vim.keymap.set('n', '<leader>9', '9gt', { desc = 'Go to tab 9' })

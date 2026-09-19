@@ -36,7 +36,7 @@ return {
     { '<leader>fg', function() Snacks.picker.git_files() end, desc = 'Find Git Files' },
     {
       '<leader>fp',
-      function() Snacks.picker.projects { dev = { '~/Projects/', '~/Projects/Godot_Projects/' }, matcher = { frecency = true } } end,
+      function() Snacks.picker.projects { dev = { '~/Projects/', '~/Projects/Godot_Projects/' }, max_depth = 4, matcher = { frecency = true } } end,
       desc = 'Projects',
     },
     { '<leader>fr', function() Snacks.picker.recent() end, desc = 'Recent' },

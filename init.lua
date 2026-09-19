@@ -92,7 +92,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
 --
 -- I put these in my personal config remap for easier use
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -426,8 +426,10 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
+        { '<leader>c', group = '[C]hecklist' },
         { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
         { '<leader>t', group = '[T]oggle' },
+        { '<leader>T', group = '[T]ab' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
     },
@@ -1060,7 +1062,6 @@ require('lazy').setup({
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
-      require('mini.pairs').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,

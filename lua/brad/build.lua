@@ -15,8 +15,8 @@ vim.api.nvim_create_autocmd('BufEnter', {
       vim.cmd ':wa'
       vim.cmd('lcd ' .. root)
       if file == 'Makefile' then
-        vim.notify('Running Make file with default args', vim.log.levels.INFO)
-        vim.cmd '!make'
+        vim.notify('Running Makefile with default_run', vim.log.levels.INFO)
+        vim.cmd '!make debug_run'
       end
       if file == 'build.sh' then
         vim.notify('building c project', vim.log.levels.INFO)
