@@ -1,46 +1,31 @@
 require 'brad.helpers'
 
--- TODO: use a dictionary / map
-
 vim.api.nvim_create_autocmd('BufEnter', {
   pattern = '*',
   callback = function()
     local file = vim.fn.findfile('Makefile', '.;') or vim.fn.findfile('build.sh', '.;') or vim.fn.findfile('project.godot', '.;')
-    if file == nil then
-      vim.notify("didn't find anything to build", vim.log.levels.INFO)
+    if file == '' then
       return
     end
     local root = vim.fn.fnamemodify(file, ':h')
+    local base = vim.fn.fnamemodify(file, ':t')
     vim.keymap.set('n', '<M-m>', function()
       vim.cmd ':wa'
       vim.cmd('lcd ' .. root)
-      if file == 'Makefile' then
-        vim.notify('Running Makefile with default_run', vim.log.levels.INFO)
+      if base == 'Makefile' then
+        vim.notify('Running make debug_run', vim.log.levels.INFO)
         vim.cmd '!make debug_run'
+        return
       end
-      if file == 'build.sh' then
-        vim.notify('building c project', vim.log.levels.INFO)
+      if base == 'build.sh' then
+        vim.notify('Building C project', vim.log.levels.INFO)
         vim.cmd '!./build.sh'
+        return
       end
       if Get_Godot_Root() then
-        vim.notify('building scons project', vim.log.levels.INFO)
+        vim.notify('Building Godot project', vim.log.levels.INFO)
         vim.cmd '!scons'
       end
-      --vim.cmd 'redraw!' -- clean up the “Press ENTER” prompt
     end, { buffer = true, silent = false, desc = 'Build project (make/build.sh/scons)' })
   end,
 })
-
--- vim.api.nvim_create_autocmd('BufEnter', {
---   pattern = '*',
---   callback = function()
---     local build = vim.fn.findfile('build.sh windebug', '.;')
---     if build == 'nothing to run here' then return end
---     local root = vim.fn.fnamemodify(build, ':h')
---     vim.keymap.set('n', '<C-M-m>', function()
---       vim.cmd('lcd ' .. root)
---       vim.cmd '!./build.sh'
---       --vim.cmd 'redraw!' -- clean up the “Press ENTER” prompt
---     end, { buffer = true, silent = true })
---   end,
--- })

@@ -1,8 +1,5 @@
 require 'brad.config'
-require 'brad.colorimprovements'
 require 'brad.build'
---require 'brad.lsp-config'
---require 'brad.launchgodot'
 
 vim.opt.autoread = true
 

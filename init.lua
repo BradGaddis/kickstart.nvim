@@ -1,96 +1,5 @@
 require 'brad'
 
---[[
-
-=e===================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:eutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
--- Set <space> as the leader key
--- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
---
--- I put these in my personal config remap for easier use
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
@@ -101,9 +10,6 @@ vim.g.have_nerd_font = true
 
 -- Make line numbers default
 vim.o.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -129,9 +35,6 @@ vim.o.smartcase = true
 
 -- Keep signcolumn on by default
 vim.o.signcolumn = 'yes'
-
--- Decrease update time
-vim.o.updatetime = 250
 
 -- Decrease mapped sequence wait time
 vim.o.timeoutlen = 300
@@ -256,138 +159,33 @@ rtp:prepend(lazypath)
 --
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
-  -- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
-
-  -- {
-  --   'stevearc/oil.nvim',
-  --   ---@module 'oil'
-  --   ---@type oil.SetupOpts
-  --   opts = {},
-  --   -- Optional dependencies
-  --   dependencies = { { 'nvim-mini/mini.icons', opts = {} } },
-  --   -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
-  --   -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
-  --   lazy = false,
-  -- },
-
-  ---@type LazySpec
-  -- {
-  --   'mikavilpas/yazi.nvim',
-  --   version = '*', -- use the latest stable version
-  --   event = 'VeryLazy',
-  --   dependencies = {
-  --     { 'nvim-lua/plenary.nvim', lazy = true },
-  --   },
-  --   keys = {
-  --     -- 👇 in this section, choose your own keymappings!
-  --     {
-  --       '<leader>-',
-  --       mode = { 'n', 'v' },
-  --       '<cmd>Yazi<cr>',
-  --       desc = 'Open yazi at the current file',
-  --     },
-  --     {
-  --       -- Open in the current working directory
-  --       '<leader>cw',
-  --       '<cmd>Yazi cwd<cr>',
-  --       desc = "Open the file manager in nvim's working directory",
-  --     },
-  --     {
-  --       '<c-up>',
-  --       '<cmd>Yazi toggle<cr>',
-  --       desc = 'Resume the last yazi session',
-  --     },
-  --   },
-  --   ---@type YaziConfig | {}
-  --   opts = {
-  --     -- if you want to open yazi instead of netrw, see below for more info
-  --     open_for_directories = false,
-  --     -- keymaps = {
-  --     --   show_help = '<f1>',
-  --     -- },
-  --   },
-  --   -- 👇 if you use `open_for_directories=true`, this is recommended
-  --   init = function()
-  --     -- mark netrw as loaded so it's not loaded at all.
-  --     --
-  --     -- More details: https://github.com/mikavilpas/yazi.nvim/issues/802
-  --     vim.g.loaded_netrwPlugin = 1
-  --   end,
-  -- },
-
   { 'NMAC427/guess-indent.nvim', opts = {} },
 
-  -- {
-  --   'hrsh7th/nvim-cmp',
-  --   dependencies = {
-  --     'hrsh7th/cmp-buffer',
-  --     'hrsh7th/cmp-path',
-  --   },
-  -- },
-  -- {
-  --   'epwalsh/obsidian.nvim',
-  --   version = '*', -- recommended, use latest release instead of latest commit
-  --   lazy = false,
-  --   cond = function()
-  --     local cwd = vim.fn.getcwd()
-  --     return cwd:find('Mind Garden', 1, true) ~= nil
-  --   end,
-  --   ft = 'markdown',
-  --   -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-  --   -- event = {
-  --   --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-  --   --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
-  --   --   -- refer to `:h file-pattern` for more examples
-  --   --   "BufReadPre path/to/my-vault/*.md",
-  --   --   "BufNewFile path/to/my-vault/*.md",
-  --   -- },
-  --   dependencies = {
-  --     -- Required.
-  --     'nvim-lua/plenary.nvim',
-  --
-  --     -- see below for full list of optional dependencies 👇
-  --   },
-  --   config = function()
-  --     require('obsidian').setup {
-  --       workspaces = {
-  --         {
-  --           name = 'Mind Garden',
-  --           path = vim.fn.expand '~/Documents/Mind Garden/',
-  --         },
-  --         -- {
-  --         --   name = 'work',
-  --         --   path = '~/vaults/work',
-  --         -- },
-  --       },
-  --       daily_notes = {
-  --         folder = '3-Other/Daily Notes',
-  --       },
-  --       completion = {
-  --         nvim_cmp = true,
-  --         min_chars = 2,
-  --       },
-  --       -- see below for full list of options 👇
-  --     }
-  --   end,
-  -- },
-
-  { 'Mathijs-Bakker/godotdev.nvim' },
+  {
+    'Mathijs-Bakker/godotdev.nvim',
+    opts = {
+      bin = 'godot',
+      dap = {
+        host = '127.0.0.1',
+        port = 6006,
+      },
+      gui = {
+        console_config = {
+          anchor = 'SW',
+          border = 'double',
+          col = 1,
+          height = 10,
+          relative = 'editor',
+          row = 99999,
+          style = 'minimal',
+          width = 99999,
+        },
+      },
+      expose_commands = true,
+    },
+  },
   { 'mbbill/undotree' },
-  -- Alternatively, use `config = function() ... end` for full control over the configuration.
-  -- If you prefer to call `setup` explicitly, use:
-  --    {
-  --        'lewis6991/gitsigns.nvim',
-  --        config = function()
-  --            require('gitsigns').setup({
-  --                -- Your gitsigns configuration here
-  --            })
-  --        end,
-  --    }
-  --
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`.
-  --
-  -- See `:help gitsigns` to understand what the configuration keys do
+
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -399,6 +197,53 @@ require('lazy').setup({
         topdelete = { text = '‾' },
         changedelete = { text = '~' },
       },
+      on_attach = function(bufnr)
+        local gs = require 'gitsigns'
+
+        local function map(mode, lhs, rhs, desc)
+          vim.keymap.set(mode, lhs, rhs, {
+            buffer = bufnr,
+            silent = true,
+            desc = desc,
+          })
+        end
+
+        -- Navigation
+        map('n', ']c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { ']c', bang = true }
+          else
+            gs.nav_hunk 'next'
+          end
+        end, 'Next hunk')
+        map('n', '[c', function()
+          if vim.wo.diff then
+            vim.cmd.normal { '[c', bang = true }
+          else
+            gs.nav_hunk 'prev'
+          end
+        end, 'Previous hunk')
+
+        -- Actions
+        map('v', '<leader>hs', function() gs.stage_hunk { vim.fn.line '.', vim.fn.line 'v' } end, 'Stage hunk')
+        map('v', '<leader>hr', function() gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' } end, 'Reset hunk')
+        map('n', '<leader>hs', gs.stage_hunk, 'Stage hunk')
+        map('n', '<leader>hr', gs.reset_hunk, 'Reset hunk')
+        map('n', '<leader>hS', gs.stage_buffer, 'Stage buffer')
+        map('n', '<leader>hR', gs.reset_buffer, 'Reset buffer')
+        map('n', '<leader>hp', gs.preview_hunk, 'Preview hunk')
+        map('n', '<leader>hb', function() gs.blame_line { full = true } end, 'Blame line')
+        map('n', '<leader>hB', gs.toggle_current_line_blame, 'Toggle line blame')
+        map('n', '<leader>hd', gs.diffthis, 'Diff this')
+        map('n', '<leader>hD', function() gs.diffthis '~' end, 'Diff this ~')
+        map('n', '<leader>ht', gs.preview_hunk_inline, 'Toggle deleted')
+        map('n', '<leader>hn', gs.toggle_numhl, 'Toggle line numbers diff hl')
+        map('n', '<leader>hL', gs.toggle_linehl, 'Toggle whole line diff hl')
+        map('n', '<leader>hw', gs.toggle_word_diff, 'Toggle word-level diff hl')
+
+        -- Visual / operator-pending text object
+        map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select hunk')
+      end,
     },
   },
 
@@ -529,7 +374,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>oc', builtin.lsp_outgoing_calls, { desc = 'List [O]utgoing [C]alls' })
+      vim.keymap.set('n', '<leader>so', builtin.lsp_outgoing_calls, { desc = '[S]earch [O]utgoing calls' })
       vim.keymap.set(
         'n',
         '<leader>rs',
@@ -1113,32 +958,7 @@ require('lazy').setup({
     end,
   },
 
-  -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
-  -- init.lua. If you want these files, they are in the repository, so you can just download them and
-  -- place them in the correct locations.
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
-  --
-  --  Here are some example plugins that I've included in the Kickstart repository.
-  --  Uncomment any of the lines below to enable them (you will need to restart nvim).
-  --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
-
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   { import = 'custom.plugins' },
-  --
-  -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
-  -- Or use telescope!
-  -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
-  -- you can continue same window with `<space>sr` which resumes last telescope search
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -1168,109 +988,13 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_python3_provider = 0
 vim.g.loaded_ruby_provider = 0
 
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
--- function ImproveTokyo(color)
---   color = color or 'tokyonight-moon'
---   vim.cmd.colorscheme(color)
---
---   vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
---   vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'none' })
--- end
---
--- ImproveTokyo()
--- require 'brad.launchgodot'
 require 'brad.remap'
 
-require('gitsigns').setup {
-  on_attach = function(bufnr)
-    local gs = require 'gitsigns'
+vim.keymap.set('n', '<leader>st', function()
+  pcall(require('telescope').load_extension, 'todo-comments')
+  require('telescope').extensions['todo-comments'].todo { keywords = 'TODO,FIX,FIXME' }
+end, { desc = 'TODO/FIX/FIXME comments' })
 
-    local function map(mode, lhs, rhs, desc)
-      vim.keymap.set(mode, lhs, rhs, {
-        buffer = bufnr,
-        silent = true,
-        desc = desc,
-      })
-    end
-
-    -- Navigation
-    map('n', ']c', function() gs.nav_hunk 'next' end, 'Next hunk')
-    map('n', '[c', function() gs.nav_hunk 'prev' end, 'Previous hunk')
-
-    -- Actions
-    map('n', '<leader>hs', gs.stage_hunk, 'Stage hunk')
-    map('n', '<leader>hr', gs.reset_hunk, 'Reset hunk')
-    map('n', '<leader>hS', gs.stage_buffer, 'Stage buffer')
-    -- map('n', '<leader>hu', gs.undo_stage_hunk, 'Undo stage hunk')
-    map('n', '<leader>hR', gs.reset_buffer, 'Reset buffer')
-    map('n', '<leader>hp', gs.preview_hunk, 'Preview hunk')
-    map('n', '<leader>hb', function() gs.blame_line { full = true } end, 'Blame line')
-    map('n', '<leader>hB', gs.toggle_current_line_blame, 'Toggle line blame')
-    map('n', '<leader>hd', gs.diffthis, 'Diff this')
-    map('n', '<leader>hD', function() gs.diffthis '~' end, 'Diff this ~')
-    map('n', '<leader>ht', gs.preview_hunk_inline, 'Toggle deleted')
-    map('n', '<leader>hn', gs.toggle_numhl, 'Toggle line numbers diff hl')
-    map('n', '<leader>hL', gs.toggle_linehl, 'Toggle whole line diff hl')
-    map('n', '<leader>hw', gs.toggle_word_diff, 'Toggle word-level diff hl')
-
-    -- Visual / operator-pending text object
-    map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>', 'Select hunk')
-  end,
-}
-
--- vim.keymap.set('n', '<leader>st', function() Snacks.picker.todo_comments() end, { desc = 'TODO comments' })
-
-vim.keymap.set('n', '<leader>st', function() Snacks.picker.todo_comments { keywords = { 'TODO', 'FIX', 'FIXME' } } end, { desc = 'TODO/FIX/FIXME comments' })
-
--- vim.keymap.set('n', '<leader>sT', function() Snacks.picker.todo_comments { buf = 0 } end, { desc = 'TODOs in current buffer' })
-
--- TODO: Do I need this still?
-require('godotdev').setup {
-  bin = 'godot',
-
-  dap = {
-    host = '127.0.0.1',
-    port = 6006,
-  },
-
-  gui = {
-    console_config = {
-      anchor = 'SW',
-      border = 'double',
-      col = 1,
-      height = 10,
-      relative = 'editor',
-      row = 99999,
-      style = 'minimal',
-      width = 99999,
-    },
-  },
-
-  expose_commands = true,
-}
-
-require('oil').setup {
-  view_options = {
-    show_hidden = true,
-    is_always_hidden = function(name, bufnr)
-      -- for godot projects ignore *.uid files
-      if is_godot_project then
-        -- ignore *.uid files introduced in godot 4.4
-        if vim.endswith(name, '.uid') then return true end
-        -- ignore server.pipe file
-        if name == 'server.pipe' then return true end
-      else
-        return false
-      end
-    end,
-  },
-}
-
--- require('auto-save').setup {
---   condition = function(buf) return vim.bo[buf].filetype ~= 'oil' end,
--- }
---
 require('auto-save').setup {
   condition = function(buf)
     return vim.bo[buf].filetype == 'markdown'

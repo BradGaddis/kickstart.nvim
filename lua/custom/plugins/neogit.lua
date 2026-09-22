@@ -4,7 +4,6 @@ return {
   cmd = 'Neogit',
   config = function()
     require('neogit').setup {
-      integrations = { snacks = true },
       disable_signs = false,
     }
   end,
@@ -13,6 +12,5 @@ return {
   },
   dependencies = {
     'nvim-lua/plenary.nvim',
-    'folke/snacks.nvim',
   },
 }

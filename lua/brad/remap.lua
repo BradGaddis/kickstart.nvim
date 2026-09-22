@@ -8,7 +8,6 @@ vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Prev search match centered' })
 vim.keymap.set('n', '<M-j>', 'i<CR><Esc>', { desc = 'split line' })
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = 'drop overwrite into void register' })
 vim.keymap.set('n', '<leader>e', ':Oil<CR>', { desc = 'Open file explorer (Oil)' })
-vim.keymap.set('n', '<C-:>', ':w', { desc = 'Save file' })
 vim.keymap.set('n', '<leader>rm', function()
   local file = vim.fn.expand '%:p'
   vim.fn.system { 'rm', file }
