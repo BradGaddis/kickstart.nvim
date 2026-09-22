@@ -4,6 +4,29 @@ return {
   version = '*', -- recommended, use latest release instead of latest commit
   lazy = true,
   ft = 'markdown',
+  keys = {
+    { '<leader>oo', '<cmd>Obsidian open<CR>', desc = 'Obsidian: [O]pen note in app' },
+    { '<leader>on', '<cmd>Obsidian new<CR>', desc = 'Obsidian: [N]ew note' },
+    { '<leader>os', '<cmd>Obsidian search<CR>', desc = 'Obsidian: [S]earch notes' },
+    { '<leader>ob', '<cmd>Obsidian backlinks<CR>', desc = 'Obsidian: [B]acklinks' },
+    { '<leader>ot', '<cmd>Obsidian tags<CR>', desc = 'Obsidian: [T]ags' },
+    { '<leader>oT', '<cmd>Obsidian toc<CR>', desc = 'Obsidian: Table of [C]ontents' },
+    { '<leader>ol', '<cmd>Obsidian links<CR>', desc = 'Obsidian: [L]inks in note' },
+    { '<leader>of', '<cmd>Obsidian follow_link<CR>', desc = 'Obsidian: [F]ollow link' },
+    { '<leader>or', '<cmd>Obsidian rename<CR>', desc = 'Obsidian: [R]ename note' },
+    { '<leader>op', '<cmd>Obsidian paste_img<CR>', desc = 'Obsidian: [P]aste image' },
+    { '<leader>od', '<cmd>Obsidian today<CR>', desc = 'Obsidian: [T]oday note' },
+    { '<leader>oD', '<cmd>Obsidian dailies<CR>', desc = 'Obsidian: [D]aily notes' },
+    { '<leader>om', '<cmd>Obsidian template<CR>', desc = 'Obsidian: Insert [M]emplate' },
+    { '<leader>oM', '<cmd>Obsidian new_from_template<CR>', desc = 'Obsidian: [N]ew from template' },
+    { '<leader>oq', '<cmd>Obsidian quick_switch<CR>', desc = 'Obsidian: [Q]uick switch' },
+    { '<leader>ou', '<cmd>Obsidian unique_note<CR>', desc = 'Obsidian: [U]nique note' },
+    { '<leader>ow', '<cmd>Obsidian workspace<CR>', desc = 'Obsidian: [W]orkspace' },
+    { '<leader>oF', '<cmd>Obsidian footnotes<CR>', desc = 'Obsidian: [F]ootnotes' },
+    { '<leader>oi', '<cmd>Obsidian link<CR>', mode = 'v', desc = 'Obsidian: [L]ink selection to note' },
+    { '<leader>oI', '<cmd>Obsidian link_new<CR>', mode = 'v', desc = 'Obsidian: Link selection to [N]ew note' },
+    { '<leader>ox', '<cmd>Obsidian extract_note<CR>', mode = 'v', desc = 'Obsidian: E[x]tract selection to note' },
+  },
   -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
   -- event = {
   --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
@@ -19,6 +42,9 @@ return {
   },
   opts = {
     legacy_commands = false,
+    -- render-markdown handles visual styling; disable obsidian's own
+    -- extmark rendering so the two don't fight over the same buffer.
+    ui = { enable = false },
     workspaces = {
       {
         name = 'Game Dev',
@@ -29,22 +55,12 @@ return {
         path = vault_path .. 'MindGardenVault',
       },
     },
-  },
-  mappings = {
-    -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
-    ['gf'] = {
-      action = function() return require('obsidian').util.gf_passthrough() end,
-      opts = { noremap = false, expr = true, buffer = true },
-    },
-    -- Toggle check-boxes.
-    -- ['<leader>ch'] = {
-    --   action = function() return require('obsidian').util.toggle_checkbox() end,
-    --   opts = { buffer = true },
-    -- },
-    -- Smart action depending on context, either follow link or toggle checkbox.
-    ['<cr>'] = {
-      action = function() return require('obsidian').util.smart_action() end,
-      opts = { buffer = true, expr = true },
+    callbacks = {
+      enter_note = function()
+        -- Toggle check-boxes. `<CR>` (smart action) is already mapped by default.
+        vim.keymap.set('n', '<leader>ch', '<cmd>Obsidian toggle_checkbox<CR>', { buffer = true, desc = 'Toggle checkbox' })
+        vim.keymap.set('v', '<leader>ch', '<cmd>Obsidian toggle_checkbox<CR>', { buffer = true, desc = 'Toggle checkbox in range' })
+      end,
     },
   },
   ---@param url string

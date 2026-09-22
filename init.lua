@@ -431,6 +431,8 @@ require('lazy').setup({
         { '<leader>t', group = '[T]oggle' },
         { '<leader>T', group = '[T]ab' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>m', group = '[M]arkdown' },
+        { '<leader>o', group = '[O]bsidian' },
       },
     },
   },
@@ -527,7 +529,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>oc', function() builtin.buffers.outgoing_calls() end, { desc = 'List [O]utgoing [C]alls' })
+      vim.keymap.set('n', '<leader>oc', builtin.lsp_outgoing_calls, { desc = 'List [O]utgoing [C]alls' })
       vim.keymap.set(
         'n',
         '<leader>rs',
