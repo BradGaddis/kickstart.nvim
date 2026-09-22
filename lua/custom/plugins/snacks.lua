@@ -27,7 +27,17 @@ return {
     { '<leader>.', function() Snacks.scratch() end, desc = 'Toggle Scratch Buffer' },
     { '<leader>n', function() Snacks.notifier.show_history() end, desc = 'Notification History' },
     { '<leader>bd', function() Snacks.bufdelete() end, desc = 'Delete Buffer' },
-    { '<leader>gB', function() Snacks.gitbrowse() end, desc = 'Git Browse', mode = { 'n', 'v' } },
+    {
+      '<leader>gB',
+      function()
+        local ok, err = pcall(Snacks.gitbrowse)
+        if not ok and not tostring(err):find('__ignore__', 1, true) then
+          vim.notify('gitbrowse: ' .. tostring(err), vim.log.levels.WARN)
+        end
+      end,
+      desc = 'Git Browse',
+      mode = { 'n', 'v' },
+    },
     { '<leader>un', function() Snacks.notifier.hide() end, desc = 'Dismiss All Notifications' },
     { '<c-/>', function() Snacks.terminal() end, desc = 'Toggle Terminal' },
     { '<c-_>', function() Snacks.terminal() end, desc = 'which_key_ignore' },
