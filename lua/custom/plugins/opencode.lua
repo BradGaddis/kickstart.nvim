@@ -1,10 +1,11 @@
 return {
   'nickjvandyke/opencode.nvim',
   version = '*', -- Latest stable release
-  opts = {},
-  config = function(_, opts)
-    require('opencode').setup(opts)
-
+  init = function()
+    -- Config is read from the global when the plugin module loads.
+    vim.g.opencode_opts = {}
+  end,
+  config = function()
     -- Recommended/example keymaps
     vim.keymap.set({ 'n', 'x' }, '<C-a>', function() require('opencode').ask('@this: ', { submit = true }) end, { desc = 'Ask opencode…' })
     vim.keymap.set({ 'n', 'x' }, '<C-x>', function() require('opencode').select() end, { desc = 'Execute opencode action…' })
